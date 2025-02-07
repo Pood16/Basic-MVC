@@ -3,6 +3,7 @@
 namespace App\Core;
 
 class Router {
+
     private array $routes = [];
     
     public function add($method, $path, $handler){
@@ -14,6 +15,7 @@ class Router {
     }
     
     public function dispatch(){
+        
         $method = $_SERVER['REQUEST_METHOD'];
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         
@@ -34,5 +36,9 @@ class Router {
     private function matchPath($routePath, $requestPath){
         $routeRegex = preg_replace('/\{([^}]+)\}/', '([^/]+)', $routePath);
         return preg_match("#^$routeRegex$#", $requestPath);
+    }
+
+    public function getRoutes(){
+        return $this->routes;
     }
 }

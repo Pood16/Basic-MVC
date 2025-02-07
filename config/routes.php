@@ -1,10 +1,17 @@
 <?php
-
+use App\Core\Router;
 use App\Controllers\Front\AuthController;
 use App\Controllers\Front\HomeController;
 use App\Controllers\Front\UserController;
 use App\Controllers\Front\AdminController;
 use App\Controllers\Back\DashboardController;
+
+
+$router = new Router();
+
+
+// for testing 
+$router->add('GET', '/lahcen/ouirghane/{12}', [HomeController::class, 'index']);
 
 // Front Office Routes
 $router->add('GET', '/', [HomeController::class, 'index']);
@@ -19,4 +26,13 @@ $router->add('GET', '/welcomeUser', [UserController::class, 'welcomeUser']);
 $router->add('GET', '/welcomeAdmin', [AdminController::class, 'welcomeAdmin']);
 
 // Back Office Routes
+
+
 // $router->add('GET', '/admin/dashboard', [DashboardController::class, 'index']);
+
+
+$router->dispatch();
+
+// dd($router->getRoutes());
+dd($_SERVER);
+

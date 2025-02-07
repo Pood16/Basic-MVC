@@ -5,7 +5,9 @@ namespace App\Core;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 class Database {
+
     public static function init(){
+        
         $capsule = new Capsule;
         
         $capsule->addConnection([
@@ -18,6 +20,7 @@ class Database {
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
         ]);
+        
         
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
