@@ -33,6 +33,5 @@ $router->add('GET', '/welcomeAdmin', [AdminController::class, 'welcomeAdmin']);
 
 $router->dispatch();
 
-// dd($router->getRoutes());
-dd($_SERVER);
+
 

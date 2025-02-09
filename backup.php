@@ -46,16 +46,19 @@ class AuthController extends Controller {
 
     public function register() {
 
-        
-        
         //POST request
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
+
+            if (!Security::validateCsrfToken($_POST['csrf_token'])) {
+                $this->redirect('/login');
+            }
+
             $validator = new Validator();
-            /*
-            *sanitize the post data
-            */
+            
+        
+            // sanitize the post data
             $data = Security::sanitize($_POST);
+
             /*
             validate the post data :
             */
