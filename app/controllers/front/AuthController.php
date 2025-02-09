@@ -13,9 +13,9 @@ class AuthController extends Controller {
 
     public function login() {
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            
+        // post request
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $email = Security::sanitize($_POST['email']);
             $password = $_POST['password'];
@@ -23,25 +23,28 @@ class AuthController extends Controller {
             $user = User::where('email', $email)->first();
          
 
-            if ($user && password_verify($password, $user->password)) {
-                // Start session on successful login
+            if ($user && Security::verifyPassword($password, $user->password)) {
+
+                // Start session 
                 Session::start();
                 Session::set('user_role', $user->role);
                 Session::set('logged_in', true);
 
                 // Redirect 
                 if ($user->role === 'admin') {
-                    $this->redirect('/welcomeAdmin');
+                    return $this->redirect('/welcomeAdmin');
                 } else {
-                    $this->redirect('/welcomeUser');
+                    return $this->redirect('/welcomeUser');
                 }
             }
 
             // Handle login error
-            $this->view('login', ['error' => 'Invalid credentials']);
+            return $this->view('login', ['error' => 'User not Found!']);
         }
 
-        $this->view('login');
+
+        // get request
+        return $this->view('login');
     }
 
     public function register() {
