@@ -67,25 +67,3 @@ This project aims to build a **lightweight PHP framework**, inspired by best pra
 ```  
 
 ---
-
-## ⚖️ **Best Practices to Follow**  
-
-### 1. Strict Separation of Responsibilities  
-- **Front Office**: Public-facing section accessible to all users.  
-- **Back Office**: Restricted to authenticated administrators.  
-
-### 2. Data Security  
-- CSRF protection using **secure tokens**.  
-- User input validation with **Validator.php**.  
-- Protection against **XSS** and **SQL Injection** attacks using **Security.php**.  
-
-### 3. Modularity  
-- Use of abstract classes for code reusability.  
-- Easy integration with other databases.  
-
-### 4. Advanced Session and Authentication Management  
-- Session management via **Session.php**.  
-- User authentication via **Auth.php**.  
-
-### 5. Autoloading with Composer  
-- Create a `composer.json` file to manage dependencies.
