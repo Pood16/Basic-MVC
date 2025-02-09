@@ -24,31 +24,29 @@ class AuthController extends Controller {
          
 
             if ($user && Security::verifyPassword($password, $user->password)) {
-                // dd($user);
+                
 
                 // Start session 
                 Session::start();
-                Session::set('user_name', $user->name);
-                Session::set('user_email', $user->email);
-                
                 Session::set('user_role', $user->role);
+                Session::set('user_id', $user->id);
                 Session::set('logged_in', true);
 
                 // Redirect 
                 if ($user->role === 'admin') {
-                    return $this->redirect('/welcomeAdmin');
+                    return $this->redirect('admin');
                 } else {
-                    return $this->redirect('/welcomeUser');
+                    return $this->redirect('user');
                 }
             }
 
             // Handle login error
-            return $this->view('login', ['error' => 'User not Found!']);
+            return $this->viewAuth('login', ['error' => 'User not Found!']);
         }
 
 
         // get request
-        return $this->view('login');
+        return $this->viewAuth('login', ['csrf_token' => Security::generateCsrfToken()]);
     }
 
     public function register() {
@@ -90,7 +88,7 @@ class AuthController extends Controller {
                 // check if email is taken 
                 if(User::Where('email', $data['email'])->exists()){
             
-                    return $this->view('/register', ['user_exist' => 'An account with this email exists!']);
+                    return $this->viewAuth('register', ['user_exist' => 'An account with this email exists!']);
                 }
 
                 $data['password'] = Security::hashPassword($data['password']);
@@ -104,16 +102,16 @@ class AuthController extends Controller {
                     'password' => $data['password'],
                     'role' => $role
                 ]);
-                return $this->redirect('/login');
+                return $this->redirect('login');
             }
             $errors = Session::set('errors', $validator->getErrors());
-            return $this->redirect('/register');          
+            return $this->redirect('register');          
         }
         
     }
 
     public function logout() {
         Auth::logout();
-        $this->redirect('/login');
+        $this->redirect('login');
     }
 }

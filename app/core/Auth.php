@@ -4,6 +4,7 @@ namespace App\Core;
 use App\Core\Session;
 
 class Auth {
+    
     public static function check(){
         return isset($_SESSION['user_id']);
     }

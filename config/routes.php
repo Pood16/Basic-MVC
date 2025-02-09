@@ -22,8 +22,8 @@ $router->add('POST', '/login', [AuthController::class, 'login']);
 $router->add('GET', '/logout', [AuthController::class, 'logout']);
 
 // the user routers
-$router->add('GET', '/welcomeUser', [UserController::class, 'welcomeUser']);
-$router->add('GET', '/welcomeAdmin', [AdminController::class, 'welcomeAdmin']);
+$router->add('GET', '/user', [UserController::class, 'user']);
+$router->add('GET', '/admin', [AdminController::class, 'admin']);
 
 // Back Office Routes
 

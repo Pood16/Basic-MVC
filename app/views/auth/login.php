@@ -20,6 +20,7 @@
             <?php endif; ?> 
 
             <form method="POST" action="/login">
+            <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
                         Email

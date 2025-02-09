@@ -26,6 +26,7 @@ class Session {
     public static function remove($key) {
         unset($_SESSION[$key]);
     }
+    
 
     public static function destroy(){
         session_start();
