@@ -46,65 +46,63 @@ class AuthController extends Controller {
 
     public function register() {
 
+        /*
+        *Get request
+        */
+        if ($_SERVER['REQUEST_METHOD'] === 'GET'){
+            Session::remove('user_exist');
+            return $this->view('register', ['csrf_token' => Security::generateCsrfToken()]);
+        }
+
         
-        
-        //POST request
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $validator = new Validator();
             /*
             *sanitize the post data
             */
-            $data = Security::sanitize($_POST);
+            $postData = Security::sanitize($_POST);
             /*
             validate the post data :
             */
-
-            //check for empty inputs
-            $validator->required($data['name'], 'name');
-            $validator->required($data['email'], 'email');
-            $validator->required($data['password'], 'password');
-
-            // set min and max for name and password
-            $validator->min($data['name'], 4, 'name');
-            $validator->min($data['password'], 4, 'password');
-            $validator->max($data['password'], 8, 'password');
-            // check for email format
-            $validator->email($data['email']);
-            // check if email is taken 
-            if(User::Where('email', $data['email'])->exists()){
-                $validator->emailExist();
-            }
-
+            $data = [
+                'name' => $postData['name'],
+                'email' => $postData['email'],
+                'password' => $postData['password']
+            ];
             /*
-             check if there is no errors :
+            set global rules : 
             */
+            $rules = [
+                'name' => 'required|min:3',
+                'email' => 'required|email',
+                'password' => 'required|min:4'
+            ];
 
-            if ($validator->hasErrors()){
-                $this->view('register', ['errors' => $validator->getErrors()]);
+            if ($validator->validate($data, $rules)) {
+                // check if email is taken 
+                if(User::Where('email', $data['email'])->exists()){
+            
+                    return $this->view('/register', ['user_exist' => 'An account with this email exists!']);
+                }
+
+                $data['password'] = Security::hashPassword($data['password']);
+                // the first user is admin 
+                $isFirstUser = User::count() == 0;
+                $role = $isFirstUser ? 'admin' : 'user';
+            
+                $user = User::create([
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'password' => $data['password'],
+                    'role' => $role
+                ]);
+                return $this->redirect('/login');
             }
-
-
-            // the first user is admin 
-            $isFirstUser = User::count() == 0;
-            $role = $isFirstUser ? 'admin' : 'user';
-          
-            $user = User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => password_hash($data['password'], PASSWORD_DEFAULT),
-                'role' => $role
-            ]);
-
-
-            //clear errors
-            // $validator->clearErrors();
-            // Auth::login($user->toArray());
-            $this->redirect('/login');
+            $errors = Session::set('errors', $validator->getErrors());
+            return $this->redirect('/register');          
         }
-        //Get request
         
-        $this->view('register', ['csrf_token' => Security::generateCsrfToken()]);
     }
 
     public function logout() {

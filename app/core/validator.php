@@ -1,63 +1,47 @@
 <?php
-
-namespace app\core;
+namespace App\Core;
 
 class Validator {
 
     private $errors = [];
 
-    
-    //Check if a value is not empty
-    public function required($value, $field) {
-        if (empty($value)) {
-            $this->errors[$field] = "The {$field} field is required";
-            return false;
+    public function validate($data, $rules) {
+
+        foreach ($rules as $field => $ruleString) {
+            $ruleList = explode('|', $ruleString);
+            
+            foreach ($ruleList as $rule) {
+                $param = null;
+                if (strpos($rule, ':') !== false) {
+                    [$rule, $param] = explode(':', $rule);
+                }
+
+                $value = $data[$field] ?? null;
+
+                if ($rule === 'required' && empty($value)) {
+                    $this->addError($field, "The $field field is required");
+                }
+
+                if ($rule === 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                    $this->addError($field, "Invalid email format");
+                }
+
+                if ($rule === 'min' && strlen($value) < $param) {
+                    $this->addError($field, "The $field must be at least $param characters");
+                }   
+            }
         }
-        return true;
+
+        return empty($this->errors);
     }
 
-    //Validate email format
-    public function email($email) {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->errors['email'] = "The email must be a valid email address";
-            return false;
-        }
-        return true;
-    }
-    public function emailExist(){
-        $this->errors['exist'] = "This email is taken try diffrent email";
+ 
+
+    public function addError($field, $message) {
+        $this->errors[$field][] = $message;
     }
 
-    //Validate minimum length
-    public function min($value, $min, $field) {
-        if (strlen($value) < $min) {
-            $this->errors[$field] = "The {$field} must be at least {$min} characters";
-            return false;
-        }
-        return true;
-    }
-
-    //Validate maximum length
-    public function max($value, $max, $field) {
-        if (strlen($value) > $max) {
-            $this->errors[$field] = "The {$field} must not exceed {$max} characters";
-            return false;
-        }
-        return true;
-    }
-    
-    //Get all validation errors
     public function getErrors() {
         return $this->errors;
-    }
-
-    // Check if validation has errors
-    public function hasErrors() {
-        return !empty($this->errors);
-    }
-
-    //Clear all validation errors
-    public function clearErrors() {
-        $this->errors = [];
     }
 }
