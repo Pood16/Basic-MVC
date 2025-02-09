@@ -7,7 +7,7 @@
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-white">
+<body class="min-h-screen bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500">
     <div class="min-h-screen flex items-center justify-center">
    
         <div class="bg-white p-8 rounded-lg shadow-md w-96">

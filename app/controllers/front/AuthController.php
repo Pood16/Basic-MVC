@@ -24,9 +24,13 @@ class AuthController extends Controller {
          
 
             if ($user && Security::verifyPassword($password, $user->password)) {
+                // dd($user);
 
                 // Start session 
                 Session::start();
+                Session::set('user_name', $user->name);
+                Session::set('user_email', $user->email);
+                
                 Session::set('user_role', $user->role);
                 Session::set('logged_in', true);
 
